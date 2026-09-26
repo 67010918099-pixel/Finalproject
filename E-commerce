@@ -1,0 +1,1638 @@
+```html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PetCare — ร้านค้าและที่ปรึกษาสุขภาพสัตว์เลี้ยง</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            thai: ['Anuphan', 'sans-serif']
+          },
+          colors: {
+            cream: '#FFFDF8',
+            primary: '#F4A261',
+            primaryDark: '#E76F51',
+            mustard: '#E9C46A',
+            mint: '#A8DADC',
+            green: '#81B29A',
+            blue: '#BDE0FE',
+            dark: '#344054'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Anuphan', sans-serif;
+      background: #FFFDF8;
+      color: #344054;
+    }
+
+    .hero-pattern {
+      background:
+        radial-gradient(circle at 90% 20%, rgba(255,255,255,.35) 0 80px, transparent 81px),
+        radial-gradient(circle at 75% 80%, rgba(255,255,255,.25) 0 100px, transparent 101px),
+        linear-gradient(135deg, #F4A261, #E9C46A);
+    }
+
+    .product-card {
+      transition: all .25s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(52, 64, 84, .12);
+    }
+
+    .category-btn.active {
+      background: #F4A261;
+      color: white;
+      border-color: #F4A261;
+      transform: translateY(-2px);
+    }
+
+    .chat-message {
+      animation: fadeIn .3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .typing-dot {
+      animation: typing 1.2s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: translateY(0);
+      }
+
+      30% {
+        transform: translateY(-5px);
+      }
+    }
+
+    #chatWindow {
+      transition: all .3s ease;
+    }
+
+    .cart-bump {
+      animation: bump .35s ease;
+    }
+
+    @keyframes bump {
+      50% {
+        transform: scale(1.25);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-orange-100">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="h-20 flex items-center gap-4">
+
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 shrink-0">
+        <div class="w-11 h-11 rounded-2xl bg-orange-100 flex items-center justify-center text-2xl">
+          🐾
+        </div>
+
+        <div class="hidden sm:block">
+          <h1 class="font-bold text-xl text-gray-800">
+            Pet<span class="text-orange-500">Care</span>
+          </h1>
+          <p class="text-xs text-gray-400">Healthy • Happy • Loved</p>
+        </div>
+      </a>
+
+      <!-- Search -->
+      <div class="flex-1 max-w-xl mx-auto hidden md:block relative">
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="ค้นหาอาหาร ของเล่น ยา หรืออาหารเสริม..."
+          class="w-full bg-orange-50 border border-orange-100 rounded-full py-3 pl-12 pr-4 outline-none focus:ring-2 focus:ring-orange-300"
+        >
+
+        <span class="absolute left-5 top-3 text-lg">
+          🔍
+        </span>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="hidden lg:flex items-center gap-5 text-sm font-medium">
+        <a href="#products" class="hover:text-orange-500 transition">
+          สินค้า
+        </a>
+
+        <a href="#categories" class="hover:text-orange-500 transition">
+          หมวดหมู่
+        </a>
+      </nav>
+
+      <!-- AI Button -->
+      <button
+        onclick="openChat()"
+        class="hidden sm:flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2.5 rounded-full font-semibold hover:bg-green-200 transition"
+      >
+        🤖
+        <span>ปรึกษาหมอ AI</span>
+      </button>
+
+      <!-- Cart -->
+      <button
+        id="cartButton"
+        class="relative w-11 h-11 rounded-full bg-orange-50 flex items-center justify-center text-xl hover:bg-orange-100 transition"
+      >
+        🛒
+
+        <span
+          id="cartCount"
+          class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-orange-500 text-white text-xs flex items-center justify-center font-bold"
+        >
+          0
+        </span>
+      </button>
+
+      <!-- Mobile menu -->
+      <button
+        class="md:hidden text-xl"
+        onclick="toggleMobileMenu()"
+      >
+        ☰
+      </button>
+
+    </div>
+
+    <!-- Mobile Search -->
+    <div class="md:hidden pb-4">
+      <div class="relative">
+        <input
+          id="mobileSearchInput"
+          type="text"
+          placeholder="ค้นหาสินค้า..."
+          class="w-full bg-orange-50 border border-orange-100 rounded-full py-3 pl-11 pr-4 outline-none"
+        >
+
+        <span class="absolute left-4 top-3">
+          🔍
+        </span>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div
+      id="mobileMenu"
+      class="hidden pb-4 border-t border-orange-100 pt-4"
+    >
+      <div class="flex flex-col gap-3">
+        <a href="#products">สินค้า</a>
+        <a href="#categories">หมวดหมู่</a>
+
+        <button
+          onclick="openChat()"
+          class="bg-green-100 text-green-700 rounded-xl py-3 font-semibold"
+        >
+          🤖 ปรึกษาหมอ AI
+        </button>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+<section class="hero-pattern text-white">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="grid lg:grid-cols-2 items-center min-h-[520px] gap-10">
+
+      <div class="py-16">
+
+        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur px-4 py-2 rounded-full mb-6">
+          ✨
+          <span class="text-sm font-medium">
+            ดูแลสัตว์เลี้ยงครบจบในที่เดียว
+          </span>
+        </div>
+
+        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+          เพราะเพื่อนตัวเล็ก
+          <br>
+          <span class="text-yellow-100">
+            ก็คือครอบครัวของเรา
+          </span>
+        </h2>
+
+        <p class="text-white/90 text-lg leading-relaxed max-w-xl mb-8">
+          พบกับอาหาร ของเล่น ยา อาหารเสริม และสินค้าสำหรับสัตว์เลี้ยง
+          พร้อมบริการ AI ช่วยประเมินอาการเบื้องต้นตลอด 24 ชั่วโมง
+        </p>
+
+        <div class="flex flex-wrap gap-4">
+
+          <a
+            href="#products"
+            class="bg-white text-orange-600 px-7 py-3.5 rounded-full font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition"
+          >
+            🛍️ ช้อปสินค้า
+          </a>
+
+          <button
+            onclick="openChat()"
+            class="border-2 border-white/70 px-7 py-3.5 rounded-full font-bold hover:bg-white/10 transition"
+          >
+            🤖 ปรึกษา AI
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Hero Illustration -->
+      <div class="hidden lg:flex justify-center items-center">
+
+        <div class="relative">
+
+          <div class="w-80 h-80 bg-white/20 rounded-full flex items-center justify-center backdrop-blur">
+            <div class="text-[150px]">
+              🐶
+            </div>
+          </div>
+
+          <div class="absolute -top-5 -right-5 bg-white text-gray-700 px-5 py-3 rounded-2xl shadow-xl">
+            ❤️ รักและดูแลทุกวัน
+          </div>
+
+          <div class="absolute -bottom-5 -left-5 bg-white text-gray-700 px-5 py-3 rounded-2xl shadow-xl">
+            🩺 AI Health Assistant
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     CATEGORY
+========================================================= -->
+<section id="categories" class="py-14">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="text-center mb-10">
+      <p class="text-orange-500 font-semibold mb-2">
+        SHOP BY CATEGORY
+      </p>
+
+      <h2 class="text-3xl font-bold text-gray-800">
+        เลือกสินค้าที่น้องๆ ต้องการ 🐾
+      </h2>
+    </div>
+
+    <div
+      id="categoryContainer"
+      class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4"
+    >
+
+      <button
+        class="category-btn active border-2 border-orange-100 bg-white rounded-2xl p-5 transition hover:-translate-y-1"
+        data-category="all"
+      >
+        <div class="w-16 h-16 mx-auto rounded-full bg-orange-100 flex items-center justify-center text-3xl mb-3">
+          🐾
+        </div>
+
+        <span class="font-semibold">
+          ทั้งหมด
+        </span>
+      </button>
+
+      <button
+        class="category-btn border-2 border-orange-100 bg-white rounded-2xl p-5 transition hover:-translate-y-1"
+        data-category="food"
+      >
+        <div class="w-16 h-16 mx-auto rounded-full bg-yellow-100 flex items-center justify-center text-3xl mb-3">
+          🍖
+        </div>
+
+        <span class="font-semibold">
+          อาหาร
+        </span>
+      </button>
+
+      <button
+        class="category-btn border-2 border-orange-100 bg-white rounded-2xl p-5 transition hover:-translate-y-1"
+        data-category="medicine"
+      >
+        <div class="w-16 h-16 mx-auto rounded-full bg-green-100 flex items-center justify-center text-3xl mb-3">
+          💊
+        </div>
+
+        <span class="font-semibold">
+          ยา
+        </span>
+      </button>
+
+      <button
+        class="category-btn border-2 border-orange-100 bg-white rounded-2xl p-5 transition hover:-translate-y-1"
+        data-category="toy"
+      >
+        <div class="w-16 h-16 mx-auto rounded-full bg-blue-100 flex items-center justify-center text-3xl mb-3">
+          🧸
+        </div>
+
+        <span class="font-semibold">
+          ของเล่น
+        </span>
+      </button>
+
+      <button
+        class="category-btn border-2 border-orange-100 bg-white rounded-2xl p-5 transition hover:-translate-y-1"
+        data-category="supplement"
+      >
+        <div class="w-16 h-16 mx-auto rounded-full bg-purple-100 flex items-center justify-center text-3xl mb-3">
+          🧴
+        </div>
+
+        <span class="font-semibold">
+          อาหารเสริม
+        </span>
+      </button>
+
+      <button
+        class="category-btn border-2 border-orange-100 bg-white rounded-2xl p-5 transition hover:-translate-y-1"
+        data-category="accessory"
+      >
+        <div class="w-16 h-16 mx-auto rounded-full bg-pink-100 flex items-center justify-center text-3xl mb-3">
+          🎀
+        </div>
+
+        <span class="font-semibold">
+          อุปกรณ์
+        </span>
+      </button>
+
+      <button
+        class="category-btn border-2 border-orange-100 bg-white rounded-2xl p-5 transition hover:-translate-y-1"
+        data-category="hygiene"
+      >
+        <div class="w-16 h-16 mx-auto rounded-full bg-cyan-100 flex items-center justify-center text-3xl mb-3">
+          🛁
+        </div>
+
+        <span class="font-semibold">
+          ดูแลความสะอาด
+        </span>
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     PRODUCT SECTION
+========================================================= -->
+<section id="products" class="py-14 bg-[#F8F7F3]">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8">
+
+      <div>
+        <p class="text-orange-500 font-semibold mb-2">
+          OUR PRODUCTS
+        </p>
+
+        <h2 class="text-3xl font-bold text-gray-800">
+          สินค้าแนะนำ
+        </h2>
+      </div>
+
+      <p
+        id="productResult"
+        class="text-gray-500 text-sm"
+      ></p>
+
+    </div>
+
+    <div
+      id="productGrid"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+    >
+    </div>
+
+    <div
+      id="noProducts"
+      class="hidden text-center py-16"
+    >
+      <div class="text-6xl mb-4">
+        🔍
+      </div>
+
+      <h3 class="font-bold text-xl">
+        ไม่พบสินค้าที่ค้นหา
+      </h3>
+
+      <p class="text-gray-500 mt-2">
+        ลองเปลี่ยนคำค้นหาหรือเลือกหมวดหมู่อื่น
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     AI PROMOTION
+========================================================= -->
+<section class="py-16">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="bg-gradient-to-r from-green-100 to-blue-100 rounded-[2rem] p-8 sm:p-12">
+
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+
+        <div>
+
+          <span class="inline-block bg-white px-4 py-2 rounded-full text-green-700 font-semibold text-sm mb-4">
+            🤖 AI PET HEALTH
+          </span>
+
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
+            น้องไม่สบาย?
+            <br>
+            ให้ AI ช่วยประเมินเบื้องต้น
+          </h2>
+
+          <p class="text-gray-600 leading-relaxed mb-6">
+            บอกอาการของสัตว์เลี้ยงให้เรา เช่น อาเจียน ซึม
+            ไม่กินอาหาร หรือมีอาการผิดปกติ
+            ระบบจะให้คำแนะนำเบื้องต้นอย่างรวดเร็ว
+          </p>
+
+          <button
+            onclick="openChat()"
+            class="bg-green-600 text-white px-7 py-3 rounded-full font-bold hover:bg-green-700 transition"
+          >
+            🤖 เริ่มปรึกษา AI
+          </button>
+
+        </div>
+
+        <div class="text-center">
+
+          <div class="text-[130px]">
+            🐕‍🦺
+          </div>
+
+          <div class="inline-flex bg-white shadow-lg rounded-2xl px-5 py-3 gap-3 items-center">
+            <span class="text-2xl">🩺</span>
+
+            <div class="text-left">
+              <p class="font-bold">
+                Pet Health Assistant
+              </p>
+
+              <p class="text-xs text-gray-500">
+                พร้อมช่วยประเมินอาการเบื้องต้น
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+<footer class="bg-gray-800 text-white">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+
+      <div>
+
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-10 h-10 bg-orange-400 rounded-xl flex items-center justify-center text-xl">
+            🐾
+          </div>
+
+          <span class="text-xl font-bold">
+            PetCare
+          </span>
+        </div>
+
+        <p class="text-gray-400 text-sm leading-relaxed">
+          ร้านค้าออนไลน์สำหรับสัตว์เลี้ยง
+          พร้อมบริการช่วยดูแลสุขภาพเบื้องต้น
+          เพื่อให้น้องๆ มีความสุขและสุขภาพดี
+        </p>
+
+      </div>
+
+      <div>
+
+        <h3 class="font-bold mb-4">
+          หมวดหมู่สินค้า
+        </h3>
+
+        <div class="space-y-2 text-gray-400 text-sm">
+          <p>🍖 อาหารสัตว์เลี้ยง</p>
+          <p>💊 ยาและเวชภัณฑ์</p>
+          <p>🧸 ของเล่น</p>
+          <p>🧴 อาหารเสริม</p>
+        </div>
+
+      </div>
+
+      <div>
+
+        <h3 class="font-bold mb-4">
+          บริการลูกค้า
+        </h3>
+
+        <div class="space-y-2 text-gray-400 text-sm">
+          <p>คำถามที่พบบ่อย</p>
+          <p>การจัดส่งสินค้า</p>
+          <p>การคืนสินค้า</p>
+          <p>ติดต่อเรา</p>
+        </div>
+
+      </div>
+
+      <div>
+
+        <h3 class="font-bold mb-4">
+          ติดต่อเรา
+        </h3>
+
+        <div class="space-y-3 text-gray-400 text-sm">
+          <p>📞 02-123-4567</p>
+          <p>📧 hello@petcare.com</p>
+          <p>📍 Bangkok, Thailand</p>
+        </div>
+
+        <div class="flex gap-3 mt-5">
+
+          <a
+            href="#"
+            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-orange-500 transition"
+          >
+            f
+          </a>
+
+          <a
+            href="#"
+            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-orange-500 transition"
+          >
+            IG
+          </a>
+
+          <a
+            href="#"
+            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-green-500 transition"
+          >
+            LINE
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-500 text-sm">
+      © 2026 PetCare. All rights reserved.
+    </div>
+
+  </div>
+
+</footer>
+
+
+<!-- =========================================================
+     AI CHATBOT
+========================================================= -->
+
+<!-- Floating AI Button -->
+<button
+  id="floatingAIButton"
+  onclick="toggleChat()"
+  class="fixed bottom-6 right-6 z-50 w-16 h-16 bg-green-500 text-white rounded-full shadow-xl flex items-center justify-center text-3xl hover:scale-110 transition"
+  title="ปรึกษาหมอ AI"
+>
+  🤖
+</button>
+
+
+<!-- Chat Window -->
+<div
+  id="chatWindow"
+  class="hidden fixed z-50 bottom-24 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[390px] h-[600px] max-h-[calc(100vh-7rem)] bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100"
+>
+
+  <!-- Chat Header -->
+  <div class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-5 py-4 flex items-center justify-between">
+
+    <div class="flex items-center gap-3">
+
+      <div class="w-11 h-11 bg-white/20 rounded-full flex items-center justify-center text-2xl">
+        🤖
+      </div>
+
+      <div>
+        <h3 class="font-bold">
+          PetCare AI
+        </h3>
+
+        <div class="flex items-center gap-1 text-xs text-white/80">
+          <span class="w-2 h-2 bg-green-200 rounded-full"></span>
+          พร้อมให้คำปรึกษา
+        </div>
+      </div>
+
+    </div>
+
+    <button
+      onclick="toggleChat()"
+      class="w-9 h-9 rounded-full hover:bg-white/20 text-xl"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <!-- Chat Messages -->
+  <div
+    id="chatMessages"
+    class="flex-1 overflow-y-auto p-4 space-y-4 h-[445px] bg-gray-50"
+  >
+
+    <!-- Welcome -->
+    <div class="flex gap-2 chat-message">
+
+      <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+        🤖
+      </div>
+
+      <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[82%]">
+
+        <p class="text-sm leading-relaxed">
+          สวัสดีค่ะ 🐾 ฉันคือ PetCare AI
+          <br><br>
+          สามารถบอกอาการของน้องได้เลย เช่น
+          <br>
+          • สุนัขอาเจียน
+          <br>
+          • แมวซึม
+          <br>
+          • ไม่กินอาหาร
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Quick Questions -->
+  <div class="px-4 pt-3 bg-white">
+
+    <div class="flex gap-2 overflow-x-auto pb-2">
+
+      <button
+        onclick="quickQuestion('สุนัขอ้วก')"
+        class="whitespace-nowrap bg-orange-50 text-orange-600 px-3 py-2 rounded-full text-xs"
+      >
+        🐶 อ้วก
+      </button>
+
+      <button
+        onclick="quickQuestion('แมวซึม')"
+        class="whitespace-nowrap bg-blue-50 text-blue-600 px-3 py-2 rounded-full text-xs"
+      >
+        😿 ซึม
+      </button>
+
+      <button
+        onclick="quickQuestion('ไม่กินอาหาร')"
+        class="whitespace-nowrap bg-green-50 text-green-600 px-3 py-2 rounded-full text-xs"
+      >
+        🍽️ ไม่กินอาหาร
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- Chat Input -->
+  <div class="p-4 bg-white border-t">
+
+    <form
+      id="chatForm"
+      class="flex gap-2"
+    >
+
+      <input
+        id="chatInput"
+        type="text"
+        autocomplete="off"
+        placeholder="พิมพ์อาการของน้อง..."
+        class="flex-1 bg-gray-100 rounded-full px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-300"
+      >
+
+      <button
+        type="submit"
+        class="w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition"
+      >
+        ➤
+      </button>
+
+    </form>
+
+    <p class="text-[10px] text-gray-400 text-center mt-2">
+      AI ให้คำแนะนำเบื้องต้นเท่านั้น ไม่สามารถแทนที่สัตวแพทย์ได้
+    </p>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+<script>
+
+/* =========================================================
+   PRODUCT DATA
+========================================================= */
+
+const products = [
+
+  {
+    id: 1,
+    name: "อาหารสุนัข Healthy Plus",
+    category: "food",
+    price: 499,
+    oldPrice: 599,
+    image: "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 2,
+    name: "อาหารแมว Premium Care",
+    category: "food",
+    price: 429,
+    oldPrice: 520,
+    image: "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 3,
+    name: "ของเล่นเชือกสำหรับสุนัข",
+    category: "toy",
+    price: 159,
+    oldPrice: 199,
+    image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 4,
+    name: "ลูกบอลของเล่นแมว",
+    category: "toy",
+    price: 99,
+    oldPrice: 129,
+    image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 5,
+    name: "วิตามินบำรุงขนและผิว",
+    category: "supplement",
+    price: 329,
+    oldPrice: 399,
+    image: "https://images.unsplash.com/photo-1601758174114-e711c0c7c6f1?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 6,
+    name: "แชมพูอ่อนโยนสำหรับสัตว์เลี้ยง",
+    category: "hygiene",
+    price: 259,
+    oldPrice: 320,
+    image: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 7,
+    name: "ปลอกคอสัตว์เลี้ยง Premium",
+    category: "accessory",
+    price: 189,
+    oldPrice: 250,
+    image: "https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 8,
+    name: "อุปกรณ์ดูแลช่องปาก",
+    category: "medicine",
+    price: 299,
+    oldPrice: 350,
+    image: "https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 9,
+    name: "อาหารเสริมข้อต่อ",
+    category: "supplement",
+    price: 389,
+    oldPrice: 450,
+    image: "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 10,
+    name: "เบาะนอนนุ่มสำหรับสัตว์เลี้ยง",
+    category: "accessory",
+    price: 599,
+    oldPrice: 750,
+    image: "https://images.unsplash.com/photo-1601758063890-116c5b9b6f33?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 11,
+    name: "อาหารเปียกสำหรับแมว",
+    category: "food",
+    price: 45,
+    oldPrice: 55,
+    image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=600&q=80"
+  },
+
+  {
+    id: 12,
+    name: "ขนมขัดฟันสำหรับสุนัข",
+    category: "medicine",
+    price: 149,
+    oldPrice: 179,
+    image: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=600&q=80"
+  }
+
+];
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let selectedCategory = "all";
+let cartCount = 0;
+
+
+/* =========================================================
+   RENDER PRODUCTS
+========================================================= */
+
+function renderProducts() {
+
+  const productGrid = document.getElementById("productGrid");
+  const noProducts = document.getElementById("noProducts");
+  const resultText = document.getElementById("productResult");
+
+  const searchInput = document.getElementById("searchInput");
+  const mobileSearchInput = document.getElementById("mobileSearchInput");
+
+  const keyword =
+    (searchInput?.value || mobileSearchInput?.value || "")
+      .toLowerCase()
+      .trim();
+
+  const filteredProducts = products.filter(product => {
+
+    const matchCategory =
+      selectedCategory === "all" ||
+      product.category === selectedCategory;
+
+    const matchSearch =
+      product.name.toLowerCase().includes(keyword);
+
+    return matchCategory && matchSearch;
+
+  });
+
+  resultText.textContent =
+    `พบสินค้า ${filteredProducts.length} รายการ`;
+
+  if (filteredProducts.length === 0) {
+
+    productGrid.innerHTML = "";
+    noProducts.classList.remove("hidden");
+
+    return;
+
+  }
+
+  noProducts.classList.add("hidden");
+
+  productGrid.innerHTML = filteredProducts.map(product => `
+
+    <article class="product-card bg-white rounded-3xl overflow-hidden border border-gray-100">
+
+      <div class="relative">
+
+        <img
+          src="${product.image}"
+          alt="${product.name}"
+          class="w-full h-56 object-cover"
+          loading="lazy"
+        >
+
+        <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+          SALE
+        </span>
+
+        <button
+          class="absolute top-3 right-3 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center hover:bg-white"
+        >
+          ♡
+        </button>
+
+      </div>
+
+      <div class="p-5">
+
+        <p class="text-xs text-orange-500 font-semibold mb-2">
+          ${getCategoryName(product.category)}
+        </p>
+
+        <h3 class="font-bold text-gray-800 text-lg mb-3">
+          ${product.name}
+        </h3>
+
+        <div class="flex items-end gap-2 mb-4">
+
+          <span class="text-2xl font-bold text-orange-600">
+            ฿${product.price.toLocaleString()}
+          </span>
+
+          <span class="text-sm text-gray-400 line-through">
+            ฿${product.oldPrice.toLocaleString()}
+          </span>
+
+        </div>
+
+        <button
+          onclick="addToCart(${product.id})"
+          class="w-full bg-orange-100 text-orange-700 py-3 rounded-xl font-bold hover:bg-orange-500 hover:text-white transition"
+        >
+          🛒 เพิ่มลงตะกร้า
+        </button>
+
+      </div>
+
+    </article>
+
+  `).join("");
+
+}
+
+
+/* =========================================================
+   CATEGORY NAME
+========================================================= */
+
+function getCategoryName(category) {
+
+  const names = {
+
+    food: "อาหารสัตว์เลี้ยง",
+    medicine: "สุขภาพและเวชภัณฑ์",
+    toy: "ของเล่น",
+    supplement: "อาหารเสริม",
+    accessory: "อุปกรณ์",
+    hygiene: "ดูแลความสะอาด"
+
+  };
+
+  return names[category] || "สินค้าแนะนำ";
+
+}
+
+
+/* =========================================================
+   CATEGORY FILTER
+========================================================= */
+
+document.querySelectorAll(".category-btn").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    document
+      .querySelectorAll(".category-btn")
+      .forEach(btn => btn.classList.remove("active"));
+
+    button.classList.add("active");
+
+    selectedCategory =
+      button.dataset.category;
+
+    renderProducts();
+
+    document
+      .getElementById("products")
+      .scrollIntoView({
+        behavior: "smooth"
+      });
+
+  });
+
+});
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+document
+  .getElementById("searchInput")
+  .addEventListener("input", function() {
+
+    document.getElementById("mobileSearchInput").value =
+      this.value;
+
+    renderProducts();
+
+  });
+
+
+document
+  .getElementById("mobileSearchInput")
+  .addEventListener("input", function() {
+
+    document.getElementById("searchInput").value =
+      this.value;
+
+    renderProducts();
+
+  });
+
+
+/* =========================================================
+   ADD TO CART
+========================================================= */
+
+function addToCart(productId) {
+
+  cartCount++;
+
+  const cartCountElement =
+    document.getElementById("cartCount");
+
+  cartCountElement.textContent =
+    cartCount;
+
+  cartCountElement.classList.remove("cart-bump");
+
+  void cartCountElement.offsetWidth;
+
+  cartCountElement.classList.add("cart-bump");
+
+  showToast("เพิ่มสินค้าลงตะกร้าแล้ว 🛒");
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(message) {
+
+  const toast = document.createElement("div");
+
+  toast.className = `
+    fixed
+    bottom-6
+    left-1/2
+    -translate-x-1/2
+    z-[100]
+    bg-gray-800
+    text-white
+    px-5
+    py-3
+    rounded-full
+    shadow-xl
+    text-sm
+    font-semibold
+  `;
+
+  toast.textContent = message;
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+
+    toast.remove();
+
+  }, 2000);
+
+}
+
+
+/* =========================================================
+   MOBILE MENU
+========================================================= */
+
+function toggleMobileMenu() {
+
+  document
+    .getElementById("mobileMenu")
+    .classList.toggle("hidden");
+
+}
+
+
+/* =========================================================
+   CHATBOT
+========================================================= */
+
+function toggleChat() {
+
+  const chatWindow =
+    document.getElementById("chatWindow");
+
+  chatWindow.classList.toggle("hidden");
+
+}
+
+
+function openChat() {
+
+  const chatWindow =
+    document.getElementById("chatWindow");
+
+  chatWindow.classList.remove("hidden");
+
+  setTimeout(() => {
+
+    document
+      .getElementById("chatInput")
+      .focus();
+
+  }, 100);
+
+}
+
+
+function quickQuestion(text) {
+
+  document
+    .getElementById("chatInput")
+    .value = text;
+
+  document
+    .getElementById("chatForm")
+    .dispatchEvent(new Event("submit"));
+
+}
+
+
+/* =========================================================
+   SEND CHAT
+========================================================= */
+
+document
+  .getElementById("chatForm")
+  .addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const input =
+      document.getElementById("chatInput");
+
+    const message =
+      input.value.trim();
+
+    if (!message) return;
+
+    addUserMessage(message);
+
+    input.value = "";
+
+    showTyping();
+
+    setTimeout(() => {
+
+      removeTyping();
+
+      const response =
+        generateAIResponse(message);
+
+      addAIMessage(response);
+
+    }, 1500);
+
+  });
+
+
+/* =========================================================
+   USER MESSAGE
+========================================================= */
+
+function addUserMessage(message) {
+
+  const chatMessages =
+    document.getElementById("chatMessages");
+
+  const messageElement =
+    document.createElement("div");
+
+  messageElement.className =
+    "flex justify-end chat-message";
+
+  messageElement.innerHTML = `
+
+    <div class="bg-green-500 text-white rounded-2xl rounded-tr-none px-4 py-3 max-w-[82%] text-sm leading-relaxed">
+      ${escapeHTML(message)}
+    </div>
+
+  `;
+
+  chatMessages.appendChild(messageElement);
+
+  scrollChatToBottom();
+
+}
+
+
+/* =========================================================
+   AI MESSAGE
+========================================================= */
+
+function addAIMessage(message) {
+
+  const chatMessages =
+    document.getElementById("chatMessages");
+
+  const messageElement =
+    document.createElement("div");
+
+  messageElement.className =
+    "flex gap-2 chat-message";
+
+  messageElement.innerHTML = `
+
+    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+      🤖
+    </div>
+
+    <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm max-w-[85%] text-sm leading-relaxed">
+      ${message}
+    </div>
+
+  `;
+
+  chatMessages.appendChild(messageElement);
+
+  scrollChatToBottom();
+
+}
+
+
+/* =========================================================
+   TYPING INDICATOR
+========================================================= */
+
+function showTyping() {
+
+  const chatMessages =
+    document.getElementById("chatMessages");
+
+  const typing =
+    document.createElement("div");
+
+  typing.id = "typingIndicator";
+
+  typing.className =
+    "flex gap-2 chat-message";
+
+  typing.innerHTML = `
+
+    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+      🤖
+    </div>
+
+    <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm">
+
+      <div class="flex gap-1">
+
+        <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full"></span>
+        <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full"></span>
+        <span class="typing-dot w-2 h-2 bg-gray-400 rounded-full"></span>
+
+      </div>
+
+    </div>
+
+  `;
+
+  chatMessages.appendChild(typing);
+
+  scrollChatToBottom();
+
+}
+
+
+function removeTyping() {
+
+  const typing =
+    document.getElementById("typingIndicator");
+
+  if (typing) {
+
+    typing.remove();
+
+  }
+
+}
+
+
+/* =========================================================
+   AI MOCK RESPONSE
+========================================================= */
+
+function generateAIResponse(message) {
+
+  const text =
+    message.toLowerCase();
+
+  let response = "";
+
+  /* อาเจียน */
+  if (
+    text.includes("อ้วก") ||
+    text.includes("อาเจียน") ||
+    text.includes("vomit")
+  ) {
+
+    response = `
+      <strong>ถ้าน้องมีอาการอาเจียน 🐾</strong>
+      <br><br>
+      ควรสังเกตความถี่ของการอาเจียน ลักษณะสิ่งที่อาเจียน
+      และอาการอื่นร่วมด้วย เช่น ซึม ท้องเสีย หรือไม่ยอมกินน้ำ
+      <br><br>
+      หากอาเจียนหลายครั้ง อาเจียนเป็นเลือด
+      มีอาการซึมมาก หรือไม่สามารถกินน้ำได้
+      ควรพาไปพบสัตวแพทย์โดยเร็ว
+      <br><br>
+      <span class="text-red-500 font-semibold">
+        ⚠️ นี่คือการประเมินเบื้องต้น ควรพาไปพบสัตวแพทย์
+      </span>
+    `;
+
+  }
+
+  /* ซึม */
+  else if (
+    text.includes("ซึม") ||
+    text.includes("ไม่ร่าเริง") ||
+    text.includes("นอนเยอะ")
+  ) {
+
+    response = `
+      <strong>ถ้าน้องมีอาการซึม 🐶🐱</strong>
+      <br><br>
+      ลองตรวจสอบว่าน้องยังดื่มน้ำ กินอาหาร
+      และขับถ่ายตามปกติหรือไม่
+      รวมถึงสังเกตอุณหภูมิและอาการผิดปกติอื่นๆ
+      <br><br>
+      หากซึมมาก ไม่ตอบสนอง หายใจผิดปกติ
+      หรือมีอาการร่วมอื่นที่รุนแรง
+      ควรพาไปพบสัตวแพทย์โดยเร็ว
+      <br><br>
+      <span class="text-red-500 font-semibold">
+        ⚠️ นี่คือการประเมินเบื้องต้น ควรพาไปพบสัตวแพทย์
+      </span>
+    `;
+
+  }
+
+  /* ไม่กินอาหาร */
+  else if (
+    text.includes("ไม่กิน") ||
+    text.includes("ไม่ยอมกิน") ||
+    text.includes("เบื่ออาหาร")
+  ) {
+
+    response = `
+      <strong>ถ้าน้องไม่ยอมกินอาหาร 🍽️</strong>
+      <br><br>
+      หากเพิ่งเริ่มเป็นไม่นาน ลองสังเกตว่าน้องยังดื่มน้ำ
+      และมีพฤติกรรมตามปกติหรือไม่
+      <br><br>
+      อาจลองเสนออาหารที่น้องคุ้นเคยในปริมาณเล็กน้อย
+      แต่ไม่ควรบังคับกิน
+      <br><br>
+      หากไม่กินต่อเนื่อง มีอาการซึม อาเจียน ท้องเสีย
+      หรือมีอาการผิดปกติอื่นร่วมด้วย
+      ควรปรึกษาสัตวแพทย์
+      <br><br>
+      <span class="text-red-500 font-semibold">
+        ⚠️ นี่คือการประเมินเบื้องต้น ควรพาไปพบสัตวแพทย์
+      </span>
+    `;
+
+  }
+
+  /* ท้องเสีย */
+  else if (
+    text.includes("ท้องเสีย") ||
+    text.includes("ถ่ายเหลว") ||
+    text.includes("อุจจาระเหลว")
+  ) {
+
+    response = `
+      <strong>เรื่องอาการท้องเสีย 💩</strong>
+      <br><br>
+      ควรสังเกตจำนวนครั้ง ลักษณะอุจจาระ
+      และดูว่าน้องยังดื่มน้ำและมีพฤติกรรมปกติหรือไม่
+      <br><br>
+      หากมีเลือดปน ถ่ายบ่อยมาก อาเจียนร่วมด้วย
+      หรือมีอาการซึม ควรพบสัตวแพทย์
+      <br><br>
+      <span class="text-red-500 font-semibold">
+        ⚠️ นี่คือการประเมินเบื้องต้น ควรพาไปพบสัตวแพทย์
+      </span>
+    `;
+
+  }
+
+  /* หายใจ */
+  else if (
+    text.includes("หายใจ") ||
+    text.includes("หอบ") ||
+    text.includes("หายใจไม่ออก")
+  ) {
+
+    response = `
+      <strong>เกี่ยวกับการหายใจ 🫁</strong>
+      <br><br>
+      หากน้องหายใจลำบาก หอบผิดปกติ
+      เหงือกหรือลิ้นมีสีคล้ำ หรือหมดแรง
+      ถือเป็นภาวะที่ควรได้รับการตรวจโดยเร็ว
+      <br><br>
+      <span class="text-red-600 font-bold">
+        🚨 หากหายใจลำบากมาก ให้พาไปโรงพยาบาลสัตว์ทันที
+      </span>
+      <br><br>
+      <span class="text-red-500 font-semibold">
+        ⚠️ นี่คือการประเมินเบื้องต้น ควรพาไปพบสัตวแพทย์
+      </span>
+    `;
+
+  }
+
+  /* Generic */
+  else {
+
+    response = `
+      ขอบคุณที่เล่าอาการของน้องให้ฟังนะคะ 🐾
+      <br><br>
+      เพื่อประเมินเบื้องต้นได้ดีขึ้น
+      แนะนำให้สังเกตว่าอาการเริ่มตั้งแต่เมื่อไร
+      น้องกินอาหารและดื่มน้ำได้หรือไม่
+      รวมถึงมีอาการอื่นร่วมด้วยหรือไม่
+      <br><br>
+      หากอาการรุนแรงหรือแย่ลง
+      ควรพาน้องไปพบสัตวแพทย์เพื่อการตรวจที่เหมาะสม
+      <br><br>
+      <span class="text-red-500 font-semibold">
+        ⚠️ นี่คือการประเมินเบื้องต้น ควรพาไปพบสัตวแพทย์
+      </span>
+    `;
+
+  }
+
+  return response;
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+
+}
+
+
+/* =========================================================
+   SCROLL CHAT
+========================================================= */
+
+function scrollChatToBottom() {
+
+  const chatMessages =
+    document.getElementById("chatMessages");
+
+  setTimeout(() => {
+
+    chatMessages.scrollTop =
+      chatMessages.scrollHeight;
+
+  }, 50);
+
+}
+
+
+/* =========================================================
+   INITIAL RENDER
+========================================================= */
+
+renderProducts();
+
+</script>
+
+</body>
+</html>
+```
